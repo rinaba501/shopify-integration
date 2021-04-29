@@ -1,15 +1,15 @@
 import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
 
-export interface CallbackProps {
-    responseJson: ConfirmationResponse | undefined
-}
-
 export default function callback({responseJson}: CallbackProps) {
     console.log(responseJson);
     return (
         <h1>callback success!!! {responseJson}</h1>
     );
+}
+
+export interface CallbackProps {
+    responseJson: ConfirmationResponse | undefined
 }
 
 export interface ConfirmationResponse {
@@ -18,6 +18,7 @@ export interface ConfirmationResponse {
 }
 
 callback.getInitialProps = async (ctx: NextPageContext) => {
+    console.log('here');
     const { query } = ctx;
 
     const requestBody = {
@@ -25,6 +26,9 @@ callback.getInitialProps = async (ctx: NextPageContext) => {
         client_secret: query.client_secret,
         code: query.code
     }
+
+    const url = 'http://' + query.shop + '.myshopify.com/admin/oauth/access_token';
+    console.log(url);
 
     const response = await fetch('/api/route-name', {
         method: 'POST',
@@ -34,6 +38,6 @@ callback.getInitialProps = async (ctx: NextPageContext) => {
         body: JSON.stringify(requestBody)
       });
     const responseJson: ConfirmationResponse | undefined = await response.json();
+    console.log(responseJson);
     return responseJson;
-}
-
+}   

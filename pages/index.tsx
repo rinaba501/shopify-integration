@@ -12,15 +12,16 @@ const preventDefault = f => e => {
 export default function Index() {
     const router = useRouter();
     const [shop, setShop] = useState('');
+    console.log(process.env.NEXT_PUBLIC_API_KEY);
 
     const handleSubmit = preventDefault(() => {
         router.push({
           pathname: 'http://' + shop + '/admin/oauth/authorize',
           query: {
-            //   client_id: process.env.API_KEY,
-            //   scope: process.env.SCOPES,
-            //   redirect_uri: process.env.REDIRECT_URI,
-              state: '24abdb4a773b68d59d0e6b95355b4eceb2d9af80e12209fb'
+              client_id: process.env.NEXT_PUBLIC_API_KEY,
+              scope: process.env.NEXT_PUBLIC_SCOPES,
+              redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI,
+              state: '24abdb4a773b68d59d0e6b95355b4eceb2d9af80e12209fbdd'
           }
         })
       })
