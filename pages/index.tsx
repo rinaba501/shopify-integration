@@ -3,6 +3,10 @@ import React from 'react';
 import {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import saveNonce from './api/saveNonce';
+import nonce from 'nonce';
+
+const createNonce = nonce();
 
 const preventDefault = f => e => {
     e.preventDefault()
@@ -10,17 +14,19 @@ const preventDefault = f => e => {
 }
 
 export default function Index() {
-    const router = useRouter();
-    const [shop, setShop] = useState('');
+    let router = useRouter();
+    let [shop, setShop] = useState('');
 
-    const handleSubmit = preventDefault(() => {
+    let nonce = createNonce();
+
+    let handleSubmit = preventDefault(() => {
         router.push({
           pathname: 'https://' + shop + '/admin/oauth/authorize',
           query: {
               client_id: process.env.NEXT_PUBLIC_API_KEY,
               scope: process.env.NEXT_PUBLIC_SCOPES,
               redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI,
-              state: '24abdb4a773b68d59d0e6b95355b4eceb2d9af80e12209fbdd'
+              state: nonce
           }
         })
       })
