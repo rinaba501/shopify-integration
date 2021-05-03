@@ -1,9 +1,6 @@
 import crypto from 'crypto';
 
 export default function safeCompare(stringA: string, stringB: string) {
-if (!stringA || !stringB) {
-  return false;
-}
 
   const aLen = Buffer.byteLength(stringA);
   const bLen = Buffer.byteLength(stringB);
