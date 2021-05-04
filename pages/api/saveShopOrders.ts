@@ -1,8 +1,5 @@
 import { createApolloFetch } from 'apollo-fetch';
 import { NextApiRequest, NextApiResponse } from 'next';
-import nonce from 'nonce';
-import saveNonce from './saveNonce';
-const createNonce = nonce();
 
 export default async function saveShopOrders(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -25,6 +22,13 @@ export default async function saveShopOrders(req: NextApiRequest, res: NextApiRe
   });
 
   let accessToken = await fetchAccessToken(shopUrl, apolloFetch);
+
+  if (accessToken == null) {
+    res.status(404).json({
+      status: "error"
+    });
+  }
+
   let edges = await fetchOrders(shopUrl, accessToken, date);
 
   for (let idx in edges) {
@@ -56,7 +60,7 @@ export default async function saveShopOrders(req: NextApiRequest, res: NextApiRe
   }
 
   res.status(200).json({
-    shopUrl: shopUrl
+    status: "success"
   });
 };
 

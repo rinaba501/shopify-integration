@@ -7,7 +7,6 @@ export default async function checkNonce(shop: String, nonce?: String) {
         store: shop
     };
 
-    console.log(variables);
     const saveNonceQuery = `
         query nonceQuery($store: String!) {
             stores_store_by_pk(store_name: $store) {
