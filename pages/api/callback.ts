@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
 import { createApolloFetch } from 'apollo-fetch';
-import verifyHmac from "./verifyHmac";
-import checkNonce from './checkNonce';
+import verifyHmac from "../../lib/verifyHmac";
+import checkNonce from '../../lib/checkNonce';
+import createHasuraApolloFetch from '../../lib/hasura';
 
-export default function callback(req: NextApiRequest, res: NextApiResponse) {
+export default async function callback(req: NextApiRequest, res: NextApiResponse) {
     let { query } = req;
     let requestBody = {
         client_id: process.env.NEXT_PUBLIC_API_KEY,
@@ -44,45 +45,36 @@ export default function callback(req: NextApiRequest, res: NextApiResponse) {
 
     let url = 'https://' + query.shop + '/admin/oauth/access_token';
 
-    // let response = await fetch(url, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(requestBody)
-    //   });
-    // let responseJson: ConfirmationResponse | undefined = await response.json();
-    let responseJson: ConfirmationResponse = {
-        access_token: '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',
-        scope: 'write_orders,read_customers'
-    }
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+    let responseJson: ConfirmationResponse | undefined = await response.json();
+    // let responseJson: ConfirmationResponse = {
+    //     access_token: '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',
+    //     scope: 'write_orders,read_customers'
+    // }
 
-    const apolloFetch = createApolloFetch({uri: process.env.HASURA_URI});
+    let apolloFetch = createHasuraApolloFetch();
 
     const variables = {
         accessToken: responseJson.access_token,
-        store: String(query.shop)
+        url: String(query.shop)
     };
     const insertAccessTokenQuery = `
-    mutation InsertAccessToken ($accessToken: String, $store: String){
-            insert_stores_store(objects: {access_token: $accessToken, store_name: $store}, 
-            on_conflict: {constraint: store_pkey, update_columns: access_token}) {
+    mutation insertAccessToken ($accessToken: String, $url: String){
+            insert_shop(objects: {access_token: $accessToken, url: $shop}, 
+            on_conflict: {constraint: shop_pkey, update_columns: access_token}) {
             returning {
                 access_token
-                store_name
-                id
+                url
             }
             }
         }
     `;
-
-    apolloFetch.use(({ request, options }, next) => {
-        options.headers = {
-          "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET,
-          "content-type": "application/json"
-        };
-        next();
-      });
     
     apolloFetch({query: insertAccessTokenQuery, variables }).then(response => console.log(response));
 

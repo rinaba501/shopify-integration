@@ -1,15 +1,15 @@
 import { createApolloFetch } from "apollo-fetch";
 
-export default async function checkNonce(shop: String, nonce?: String) {
+export default async function checkNonce(shopUrl: String, nonce?: String) {
     const apolloFetch = createApolloFetch({uri: process.env.HASURA_URI});
 
     const variables = {
-        store: shop
+        url: shopUrl
     };
 
     const saveNonceQuery = `
-        query nonceQuery($store: String!) {
-            stores_store_by_pk(store_name: $store) {
+        query nonceQuery($url: String!) {
+            shop_by_pk(url: $url) {
                 nonce
             }
           }
@@ -27,7 +27,7 @@ export default async function checkNonce(shop: String, nonce?: String) {
     
     apolloFetch({query: saveNonceQuery, variables }).then(response => {
         console.log(response);
-        savedNonce = response.data.stores_store_by_pk.nonce;
+        savedNonce = response.data.shop_by_pk.nonce;
     });
 
     return nonce === savedNonce;

@@ -1,11 +1,10 @@
-import nonce from 'nonce';
+import nn from 'nonce-next';
 import saveNonce from './saveNonce';
-const createNonce = nonce();
 
 export default function createAuthUrl(shop: String) {
   let scopes = process.env.NEXT_PUBLIC_SCOPES;
   let redirect_uri = process.env.NEXT_PUBLIC_REDIRECT_URI;
-  let nonce = createNonce();
+  let nonce = nn.generate();
   saveNonce(shop, String(nonce));
 
   return `https://${String(body.shop)}/admin/oauth/authorize?client_id=${

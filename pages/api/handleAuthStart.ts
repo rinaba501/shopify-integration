@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import nonce from 'nonce';
-import saveNonce from './saveNonce';
+import saveNonce from '../../lib/saveNonce';
 const createNonce = nonce();
 
 export default function handleAuthStart(req: NextApiRequest, res: NextApiResponse) {

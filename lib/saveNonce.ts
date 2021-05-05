@@ -1,24 +1,22 @@
 import { createApolloFetch } from "apollo-fetch";
 
-export default function saveNonce(shop: String, nonce: String) {
+export default function saveNonce(shopUrl: String, nonce: String) {
     const apolloFetch = createApolloFetch({uri: process.env.HASURA_URI});
     console.log(nonce);
 
     const variables = {
         nonce: nonce,
-        store: shop
+        url: shopUrl
     };
     const saveNonceQuery = `
-    mutation SaveNonce ($nonce: String, $store: String){
-            insert_stores_store(objects: {nonce: $nonce, store_name: $store}, 
-            on_conflict: {constraint: store_pkey, update_columns: nonce}) {
-            returning {
-                nonce
-                store_name
-                id
-            }
-            }
+    mutation saveNonce ($nonce: String, $url: String){
+      insert_shop(objects: {nonce: $nonce, url: $url}, 
+      on_conflict: {constraint: shop_pkey, update_columns: nonce}) {
+        returning {
+          url
         }
+      }
+    }
     `;
 
     apolloFetch.use(({ request, options }, next) => {

@@ -1,7 +1,7 @@
 import { NextPageContext } from 'next';
 import { createApolloFetch } from 'apollo-fetch';
-import verifyHmac from "../api/verifyHmac";
-import checkNonce from '../api/checkNonce';
+import verifyHmac from "../../lib/verifyHmac";
+import checkNonce from '../../lib/checkNonce';
 
 export default function callback({access_token} : ConfirmationResponse) {
     console.log(access_token);

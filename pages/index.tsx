@@ -3,7 +3,7 @@ import React from 'react';
 import {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import saveNonce from './api/saveNonce';
+import saveNonce from '../lib/saveNonce';
 import nonce from 'nonce';
 
 const createNonce = nonce();
